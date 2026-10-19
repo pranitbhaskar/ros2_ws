@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<robot name="my_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="base_size" value="0.5"/>
+    <xacro:property name="base_height" value="0.2"/>
+    <xacro:property name="arm_length" value="1.0"/>
+    <xacro:property name="arm_radius" value="0.08"/>
+
+<xacro:macro name="box_link" params="link_name size height">    
+    <link name="${link_name}">
+        <visual>
+            <geometry>
+                <box size="${size} ${size} ${height}"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+</xacro:macro>
+
+<xacro:macro name="cylinder_link" params="link_name length radius">
+    <link name="${link_name}">
+        <visual>
+            <origin xyz="0 0 ${length / 2}" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${radius}" length="${length}"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        
+    </link>
+    
+</xacro:macro>
+
+<xacro:box_link
+    link_name="base_link"
+    size="${base_size}"
+    height="${base_height}"/>
+
+<xacro:cylinder_link
+    link_name="upper_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+<xacro:cylinder_link
+    link_name="forearm_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+<xacro:cylinder_link
+    link_name="wrist1_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+<xacro:cylinder_link
+    link_name="wrist2_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+<xacro:cylinder_link
+    link_name="wrist3_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+<xacro:cylinder_link
+    link_name="tool_link"
+    length="${arm_length}"
+    radius="${arm_radius}"/>
+
+
+
+    <joint name="base_to_upper" type="revolute">
+        <parent link="base_link"/>
+        <child link="upper_link"/>
+        <origin xyz="0 0 ${base_height / 2}" rpy="0 0 0"/>  
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+    </joint>
+
+    <joint name="upper_to_forearm" type="revolute">
+        <parent link="upper_link"/>
+        <child link="forearm_link"/>
+        <origin xyz="0 0 ${arm_length}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>        
+    </joint>
+
+    <joint name="forearm_to_wrist1" type="revolute">
+        <parent link="forearm_link"/>
+        <child link="wrist1_link"/>
+        <origin xyz="0 0 ${arm_length}" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>        
+    </joint>
+
+    <joint name="wrist1_to_wrist2" type="revolute">
+        <parent link="wrist1_link"/>
+        <child link="wrist2_link"/>
+        <origin xyz="0 0 ${arm_length}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+    </joint>
+
+    <joint name="wrist2_to_wrist3" type="revolute">
+        <parent link="wrist2_link"/>
+        <child link="wrist3_link"/>
+        <origin xyz="0 0 ${arm_length}" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+    </joint>
+    <joint name="wrist3_to_tool" type="revolute">
+        <parent link="wrist3_link"/>
+        <child link="tool_link"/>
+        <origin xyz="0 0 ${arm_length}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="5" velocity="1.0"/>
+    </joint>
+</robot>
